@@ -1,0 +1,28 @@
+security: 
+  oauth2:
+    client:
+      client-id: foo
+      client-secret: bar
+#spring:
+#  datasource:
+#    url: jdbc:mysql://192.168.0.10:3306/meipin?allowMultiQueries=true&useSSL=false
+#    username: "meipin"
+#    password: "!Passw0rd"
+logging.level:
+  org.hibernate.SQL: debug
+
+---
+spring:
+  profiles: dev    
+  datasource: 
+    url: jdbc:mysql://192.168.0.101:3306/meipin?allowMultiQueries=true&useSSL=false
+    
+---
+spring:
+  profiles: https
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:tomcat.keystore
+    key-store-password: password
+    key-password: password      
