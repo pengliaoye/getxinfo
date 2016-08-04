@@ -61,9 +61,15 @@ spring:
       app-secret: a498bff6e628f058adac0d3734e2182b        
     wechat:
       app-id: wx7573a9d4c3809527
-      app-secret: 23258e25fe5f9ae6023258e25fe5f9ae60            
+      app-secret: 23258e25fe5f9ae6023258e25fe5f9ae60         
+  session:
+    store-type: jdbc         
 security:      
   user:
     password: user
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/    
 #server:
 #  port: 80         

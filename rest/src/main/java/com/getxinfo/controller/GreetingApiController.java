@@ -47,7 +47,7 @@ public class GreetingApiController {
 		return pinbiConfigRepository.findAll();
 	}
 
-	@PostMapping("/pinbiconfig")
+	@PostMapping(value = "/pinbiconfig")
 	public void savePinbiConfig(@RequestBody @Valid PinbiConfig config) {
 		pinbiConfigRepository.save(config);
 	}
