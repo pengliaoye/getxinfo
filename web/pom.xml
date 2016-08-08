@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
+		</dependency>			
         
 		<dependency>
 			<groupId>com.h2database</groupId>

@@ -1,6 +1,7 @@
 package com.getxinfo;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Arrays;
 
 import javax.servlet.Filter;
@@ -23,6 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,9 +33,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @SpringBootApplication
 @EnableResourceServer
 @EnableAuthorizationServer
+@EnableSwagger2
 public class Application {
 
 	// CORS
@@ -85,6 +94,23 @@ public class Application {
 							AuthorityUtils.createAuthorityList("USER", "write")))
 					.orElseThrow(() -> new UsernameNotFoundException("could not find the user '" + username + "'"));
 		}
+	}
+
+	@Configuration
+	class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html");
+		}
+
+	}
+
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.getxinfo.controller")).build()
+				.ignoredParameterTypes(Principal.class);
 	}
 
 	@Bean
