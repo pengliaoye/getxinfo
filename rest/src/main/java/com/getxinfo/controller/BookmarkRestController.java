@@ -1,7 +1,7 @@
 package com.getxinfo.controller;
 
 import java.security.Principal;
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +19,12 @@ import com.getxinfo.Bookmark;
 import com.getxinfo.BookmarkRepository;
 import com.getxinfo.exception.UserNotFoundException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/bookmarks")
+@Api(tags = "书签管理"	)
 public class BookmarkRestController {
 
 	private final BookmarkRepository bookmarkRepository;
@@ -31,18 +35,14 @@ public class BookmarkRestController {
 	ResponseEntity<?> add(Principal principal, @RequestBody Bookmark input) {
 		String userId = principal.getName();
 		this.validateUser(userId);
-		return this.accountRepository
-				.findByUsername(userId)
-				.map(account -> {
-					Bookmark result = bookmarkRepository.save(new Bookmark(account,
-							input.uri, input.description));
+		return this.accountRepository.findByUsername(userId).map(account -> {
+			Bookmark result = bookmarkRepository.save(new Bookmark(account, input.uri, input.description));
 
-					HttpHeaders httpHeaders = new HttpHeaders();
-					httpHeaders.setLocation(ServletUriComponentsBuilder
-							.fromCurrentRequest().path("/{id}")
-							.buildAndExpand(result.getId()).toUri());
-					return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
-				}).get();
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(result.getId()).toUri());
+			return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
+		}).get();
 
 	}
 
@@ -54,21 +54,20 @@ public class BookmarkRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	Collection<Bookmark> readBookmarks(Principal principal) {
+	@ApiOperation(value = "获取书签")
+	List<Bookmark> readBookmarks(Principal principal) {
 		String userId = principal.getName();
 		this.validateUser(userId);
 		return this.bookmarkRepository.findByAccountUsername(userId);
 	}
 
 	@Autowired
-	BookmarkRestController(BookmarkRepository bookmarkRepository,
-			AccountRepository accountRepository) {
+	BookmarkRestController(BookmarkRepository bookmarkRepository, AccountRepository accountRepository) {
 		this.bookmarkRepository = bookmarkRepository;
 		this.accountRepository = accountRepository;
 	}
 
 	private void validateUser(String userId) {
-		this.accountRepository.findByUsername(userId).orElseThrow(
-				() -> new UserNotFoundException(userId));
+		this.accountRepository.findByUsername(userId).orElseThrow(() -> new UserNotFoundException(userId));
 	}
 }

@@ -17,9 +17,6 @@ import com.getxinfo.Greeting;
 import com.getxinfo.PinbiConfig;
 import com.getxinfo.PinbiConfigRepository;
 
-import antlr.collections.List;
-import io.swagger.annotations.ApiModel;
-
 @RestController
 @RequestMapping("/api")
 public class GreetingApiController {
@@ -45,7 +42,7 @@ public class GreetingApiController {
 	}
 
 	@GetMapping("/pinbiconfig")	
-	public @ApiModel(subTypes = List.class) Iterable<PinbiConfig> pinbiconfig() {
+	public Iterable<PinbiConfig> pinbiconfig() {
 		return pinbiConfigRepository.findAll();
 	}
 

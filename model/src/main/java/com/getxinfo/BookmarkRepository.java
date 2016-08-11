@@ -1,10 +1,10 @@
 package com.getxinfo;
 
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Collection;
-
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
-    Collection<Bookmark> findByAccountUsername(String username);
+    List<Bookmark> findByAccountUsername(String username);
 }
