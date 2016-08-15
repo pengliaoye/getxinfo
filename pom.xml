@@ -24,18 +24,18 @@
 		<module>web</module>
 		<module>rest</module>
 	</modules>
-	
+
 	<dependencyManagement>
-	    <dependencies>
-	        <dependency>
-	            <groupId>org.springframework.cloud</groupId>
-	            <artifactId>spring-cloud-dependencies</artifactId>
-	            <version>Brixton.SR4</version>
-	            <type>pom</type>
-	            <scope>import</scope>
-	        </dependency>
-	    </dependencies>
-	</dependencyManagement>	 		
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Brixton.SR4</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
@@ -82,7 +82,7 @@
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>	
+	</dependencies>
 
 	<!-- (you don't need this if you are using a .RELEASE version) -->
 	<repositories>
@@ -100,6 +100,10 @@
 		<repository>
 			<id>libs-snapshot</id>
 			<url>https://repo.spring.io/libs-snapshot/</url>
+		</repository>
+		<repository>
+			<id>confluent</id>
+			<url>http://packages.confluent.io/maven/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>

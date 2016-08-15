@@ -22,4 +22,6 @@ public class HelloControllerIT {
 		String body = this.restTemplate.getForObject("/", String.class);
 		assertThat(body).isEqualTo("Hello World!");
 	}
+	
+	
 }

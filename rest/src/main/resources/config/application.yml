@@ -10,6 +10,7 @@ security:
 #    password: "!Passw0rd"
 logging.level:
   org.hibernate.SQL: debug
+  org.springframework.security.oauth2: debug
 
 ---
 spring:
