@@ -21,7 +21,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -122,11 +121,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		tokenServices.setRestTemplate(oAuth2RestTemplate);
 		oAuth2ClientAuthenticationFilter.setTokenServices(tokenServices);
 		return oAuth2ClientAuthenticationFilter;
-	}
-
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(this.dataSource);
 	}
 
 	class ClientResources {

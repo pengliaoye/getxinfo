@@ -1,0 +1,111 @@
+/*******************************************************************************
+ *     Cloud Foundry
+ *     Copyright (c) [2009-2016] Pivotal Software, Inc. All Rights Reserved.
+ *
+ *     This product is licensed to you under the Apache License, Version 2.0 (the "License").
+ *     You may not use this product except in compliance with the License.
+ *
+ *     This product includes a number of subcomponents with
+ *     separate copyright notices and license terms. Your use of these
+ *     subcomponents is subject to the terms and conditions of the
+ *     subcomponent's license, as noted in the LICENSE file.
+ *******************************************************************************/
+package com.getxinfo.authentication.manager;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
+
+import com.getxinfo.audit.AuditEvent;
+import com.getxinfo.audit.AuditEventType;
+import com.getxinfo.audit.UaaAuditService;
+import com.getxinfo.provider.LockoutPolicy;
+import com.getxinfo.user.UaaUser;
+
+/**
+ * Locks an account out for a configured period based on the number of failed
+ * logins since a specific time in the past.
+ * <p>
+ * Queries the audit service to obtain the relevant data for the user.
+ *
+ * @author Luke Taylor
+ */
+
+@Component
+public class PeriodLockoutPolicy implements AccountLoginPolicy {
+
+    private final Log logger = LogFactory.getLog(getClass());
+    private final UaaAuditService auditService;
+    
+    @Autowired
+    private LockoutPolicy lockoutPolicy;
+
+    @Autowired
+    public PeriodLockoutPolicy(UaaAuditService auditService) {
+        this.auditService = auditService;
+    }
+
+    @Override
+    public boolean isAllowed(UaaUser user, Authentication a) throws AuthenticationException {
+        LockoutPolicy localPolicy = lockoutPolicy;
+
+        long eventsAfter = System.currentTimeMillis() - localPolicy.getCountFailuresWithin() * 1000;
+
+        List<AuditEvent> events = auditService.find(user.getId(), eventsAfter);
+
+        final int failureCount = sequentialFailureCount(events);
+
+        if (failureCount >= localPolicy.getLockoutAfterFailures()) {
+            // Check whether time of most recent failure is within the lockout
+            // period
+            AuditEvent lastFailure = mostRecentFailure(events);
+            if (lastFailure != null && lastFailure.getTime() > System.currentTimeMillis() - localPolicy.getLockoutPeriodSeconds() * 1000) {
+                logger.warn("User " + user.getUsername() + " and id " + user.getId() + " has "
+                                + failureCount + " failed logins within the last checking period.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Counts the number of failures that occurred without an intervening
+     * successful login.
+     */
+    private int sequentialFailureCount(List<AuditEvent> events) {
+        int failureCount = 0;
+        for (AuditEvent event : events) {
+            if (event.getType() == AuditEventType.UserAuthenticationFailure) {
+                failureCount++;
+            } else if (event.getType() == AuditEventType.UserAuthenticationSuccess) {
+                // Successful authentication occurred within last allowable
+                // failures, so ignore
+                break;
+            }
+        }
+        return failureCount;
+    }
+
+    private AuditEvent mostRecentFailure(List<AuditEvent> events) {
+        for (AuditEvent event : events) {
+            if (event.getType() == AuditEventType.UserAuthenticationFailure) {
+                return event;
+            }
+        }
+        return null;
+    }
+
+    public void setLockoutPolicy(LockoutPolicy lockoutPolicy) {
+        this.lockoutPolicy = lockoutPolicy;
+    }
+
+    public LockoutPolicy getLockoutPolicy() {
+        return lockoutPolicy;
+    }
+}

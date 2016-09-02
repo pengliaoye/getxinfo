@@ -80,11 +80,28 @@
 			<!-- For CP 3.0.0 -->
 			<version>3.0.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>		
+		
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.0.0.RC2</version>
+		</dependency>		
 
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.unboundid.product.scim</groupId>
+		    <artifactId>scim-sdk</artifactId>
+		    <version>1.8.13</version>
+		</dependency>		
 
 	</dependencies>
 

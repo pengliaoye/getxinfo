@@ -70,6 +70,20 @@ security:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/    
+      defaultZone: http://localhost:8761/eureka/  
+authentication:
+  policy:
+    lockoutPeriodSeconds: 300
+    lockoutAfterFailures: 5
+    countFailuresWithinSeconds: 1200
+password:
+  policy:
+    minLength: 0
+    maxLength: 255
+    requireUpperCaseCharacter: 0
+    requireLowerCaseCharacter: 0
+    requireDigit: 0
+    requireSpecialCharacter: 0
+    expirePasswordInMonths: 0 
 #server:
 #  port: 80         
