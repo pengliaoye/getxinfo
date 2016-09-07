@@ -1,22 +1,17 @@
 package com.getxinfo.account;
 
 import static com.getxinfo.codestore.ExpiringCodeType.REGISTRATION;
-import static com.getxinfo.util.UaaUrlUtils.findMatchingRedirectUri;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.NoSuchClientException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -34,6 +29,7 @@ import com.getxinfo.scim.util.ScimUtils;
 import com.getxinfo.scim.validate.PasswordValidator;
 import com.getxinfo.util.JsonUtils;
 
+@Component
 public class EmailAccountCreationService implements AccountCreationService {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -44,25 +40,20 @@ public class EmailAccountCreationService implements AccountCreationService {
     private final MessageService messageService;
     private final ExpiringCodeStore codeStore;
     private final ScimUserProvisioning scimUserProvisioning;
-    private final ClientDetailsService clientDetailsService;
     private final PasswordValidator passwordValidator;
-    private final String companyName;
 
     public EmailAccountCreationService(
             SpringTemplateEngine templateEngine,
             MessageService messageService,
             ExpiringCodeStore codeStore,
             ScimUserProvisioning scimUserProvisioning,
-            ClientDetailsService clientDetailsService,
-            PasswordValidator passwordValidator, String companyName) {
+            PasswordValidator passwordValidator) {
 
         this.templateEngine = templateEngine;
         this.messageService = messageService;
         this.codeStore= codeStore;
-        this.scimUserProvisioning = scimUserProvisioning;
-        this.clientDetailsService = clientDetailsService;
+        this.scimUserProvisioning = scimUserProvisioning;       
         this.passwordValidator = passwordValidator;
-        this.companyName = companyName;
     }
 
     @Override
@@ -118,22 +109,6 @@ public class EmailAccountCreationService implements AccountCreationService {
     }
 
     private String getRedirect(String clientId, String redirectUri) throws IOException {
-        if (clientId != null) {
-            try {
-                ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-
-                Set<String> registeredRedirectUris = clientDetails.getRegisteredRedirectUri() == null ? Collections.emptySet() :
-                        clientDetails.getRegisteredRedirectUri();
-                String signupRedirectUrl = (String) clientDetails.getAdditionalInformation().get(SIGNUP_REDIRECT_URL);
-                String matchingRedirectUri = findMatchingRedirectUri(registeredRedirectUris, redirectUri, signupRedirectUrl);
-
-                if (matchingRedirectUri != null) {
-                    return matchingRedirectUri;
-                }
-            } catch (NoSuchClientException nsce) {
-                logger.debug(String.format("Unable to find client with ID:%s for account activation redirect", clientId), nsce);
-            }
-        }
 
         return getDefaultRedirect();
     }

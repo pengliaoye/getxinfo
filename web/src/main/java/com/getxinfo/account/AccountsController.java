@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,6 +46,7 @@ public class AccountsController {
 
     private final AccountCreationService accountCreationService;
 
+    @Autowired
     public AccountsController(AccountCreationService accountCreationService) {
         this.accountCreationService = accountCreationService;
     }

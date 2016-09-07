@@ -63,7 +63,11 @@ spring:
       app-id: wx7573a9d4c3809527
       app-secret: 23258e25fe5f9ae6023258e25fe5f9ae60         
   session:
-    store-type: jdbc         
+    store-type: jdbc    
+  mail:
+    host: smtp.getxinfo.com
+    username: admin
+    password: Passw0rd      
 security:      
   user:
     password: user
@@ -85,5 +89,7 @@ password:
     requireDigit: 0
     requireSpecialCharacter: 0
     expirePasswordInMonths: 0 
+login.url: http://localhost:8080/uaa
+smtp.from_address: test@126.com    
 #server:
 #  port: 80         

@@ -40,6 +40,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.getxinfo.resources.ResourceMonitor;
@@ -59,6 +60,7 @@ import com.getxinfo.scim.exception.ScimResourceNotFoundException;
  * @author Luke Taylor
  * @author Dave Syer
  */
+@Component
 public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser>
     implements ScimUserProvisioning, ResourceMonitor<ScimUser> {
 
