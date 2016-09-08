@@ -10,6 +10,10 @@
 	</parent>
 
 	<artifactId>web</artifactId>
+	
+	<properties>
+		<docker.image.name>web</docker.image.name>
+	</properties>
 
 	<!-- Additional lines to be added here... -->
 	<dependencies>
