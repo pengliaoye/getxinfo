@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +48,7 @@ public class JdbcExpiringCodeStore implements ExpiringCodeStore {
 
     private RandomValueStringGenerator generator = new RandomValueStringGenerator(10);
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private AtomicLong lastExpired = new AtomicLong();

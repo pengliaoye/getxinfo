@@ -12,7 +12,7 @@ CREATE TABLE users (
    active BOOLEAN default true not null,
    phoneNumber VARCHAR(255),
    verified BOOLEAN default false not null,
-   origin varchar(36) default 'uaa' NOT NULL,
+   origin varchar(36) default 'uaa',
    external_id varchar(255) default NULL,
    identity_zone_id varchar(36) DEFAULT 'uaa',
    salt VARCHAR(36) default NULL,
@@ -64,3 +64,10 @@ CREATE TABLE sec_audit (
    created TIMESTAMP default current_timestamp,
    identity_zone_id varchar(36) DEFAULT 'uaa'
 ) ;
+
+CREATE TABLE expiring_code_store (
+  code VARCHAR(255) NOT NULL PRIMARY KEY,
+  expiresat BIGINT NOT NULL,
+  data MEDIUMTEXT NOT NULL,
+  intent LONGTEXT DEFAULT NULL
+);

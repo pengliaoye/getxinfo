@@ -65,10 +65,12 @@ spring:
   session:
     store-type: jdbc    
   mail:
-    host: smtp.getxinfo.com
-    username: admin
-    password: Passw0rd      
+    host: smtp.mxhichina.com
+    username: admin@getxinfo.com
+    password: "!Passw0rd"      
 security:      
+  basic:
+    enabled: false
   user:
     password: user
 eureka:
@@ -90,6 +92,6 @@ password:
     requireSpecialCharacter: 0
     expirePasswordInMonths: 0 
 login.url: http://localhost:8080/uaa
-smtp.from_address: test@126.com    
+smtp.from_address: admin@getxinfo.com   
 #server:
 #  port: 80         

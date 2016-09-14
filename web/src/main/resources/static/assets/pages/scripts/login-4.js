@@ -154,6 +154,22 @@ var Login = function () {
             
             return $state;
         }
+		        
+		var register = function(form){
+        	fetch('/create_account.do', {
+          	  method: 'POST',
+          	  body: new FormData(form),
+          	  credentials: 'same-origin'
+          	}).then(function(response) {	    
+          	  if(response.ok){
+          		  location.href="/";
+          	  } else {
+          		  response.text().then(function(msg){
+          			  console.log(msg);	  
+          		  });
+          	  }
+          	});	  			
+		}		        
 
         if (jQuery().select2 && $('#country_list').size() > 0) {
             $("#country_list").select2({
@@ -243,7 +259,7 @@ var Login = function () {
 	            },
 
 	            submitHandler: function (form) {
-	                form.submit();
+	            	register(form);
 	            }
 	        });
 

@@ -152,6 +152,6 @@ public class EmailAccountCreationService implements AccountCreationService {
         ctx.setVariable("code", code);
         ctx.setVariable("email", email);
         ctx.setVariable("accountsUrl", accountsUrl);
-        return templateEngine.process("activate", ctx);
+        return templateEngine.process("mail/activate", ctx);
     }
 }

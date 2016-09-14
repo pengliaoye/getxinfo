@@ -83,7 +83,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser>
 
     public static final String READ_PASSWORD_SQL = "select password from users where id=? and identity_zone_id=?";
 
-    public static final String USER_BY_ID_QUERY = "select " + USER_FIELDS + " from users " + "where id=? and identity_zone_id=?";
+    public static final String USER_BY_ID_QUERY = "select " + USER_FIELDS + " from users " + "where id=?";
 
     public static final String ALL_USERS = "select " + USER_FIELDS + " from users";
 
@@ -119,7 +119,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser>
     @Override
     public ScimUser retrieve(String id) {
         try {
-            ScimUser u = jdbcTemplate.queryForObject(USER_BY_ID_QUERY, mapper, id, null);
+            ScimUser u = jdbcTemplate.queryForObject(USER_BY_ID_QUERY, mapper, id);
             return u;
         } catch (EmptyResultDataAccessException e) {
             throw new ScimResourceNotFoundException("User " + id + " does not exist");

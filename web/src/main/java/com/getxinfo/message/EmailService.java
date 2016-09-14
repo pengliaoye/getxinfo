@@ -26,7 +26,7 @@ public class EmailService implements MessageService {
     private final String fromAddress;
 
     @Autowired
-    public EmailService(JavaMailSender mailSender, @Value("{login.url}") String loginUrl, @Value("{smtp.from_address}") String fromAddress) {
+    public EmailService(JavaMailSender mailSender, @Value("${login.url}") String loginUrl, @Value("${smtp.from_address}") String fromAddress) {
         this.mailSender = mailSender;
         this.loginUrl = loginUrl;
 
@@ -53,7 +53,7 @@ public class EmailService implements MessageService {
     }
 
     private Address[] getSenderAddresses() throws AddressException, UnsupportedEncodingException {
-        String name = null;
+        String name = "x信息";
 
         return new Address[]{new InternetAddress(fromAddress, name)};
     }

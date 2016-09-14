@@ -43,7 +43,7 @@ public class JdbcUaaUserDatabase implements UaaUserDatabase {
 
     public static final String USER_FIELDS = "id,username,password,email,givenName,familyName,created,lastModified,authorities,origin,external_id,verified,identity_zone_id,salt,passwd_lastmodified,phoneNumber,legacy_verification_behavior ";
 
-    public static final String PRE_DEFAULT_USER_BY_USERNAME_QUERY = "select " + USER_FIELDS + "from users where %s = ? and active=? and origin=?";
+    public static final String PRE_DEFAULT_USER_BY_USERNAME_QUERY = "select " + USER_FIELDS + "from users where %s = ? and active=?";
     public static final String DEFAULT_CASE_SENSITIVE_USER_BY_USERNAME_QUERY = String.format(PRE_DEFAULT_USER_BY_USERNAME_QUERY, "lower(username)");
     public static final String DEFAULT_CASE_INSENSITIVE_USER_BY_USERNAME_QUERY = String.format(PRE_DEFAULT_USER_BY_USERNAME_QUERY, "username");
 
@@ -55,7 +55,7 @@ public class JdbcUaaUserDatabase implements UaaUserDatabase {
     public static final String DEFAULT_USER_BY_ID_QUERY = "select " + USER_FIELDS + "from users where id = ? and active=? and identity_zone_id=?";
 
 
-    private String AUTHORITIES_QUERY = "select g.id,g.displayName from groups g, group_membership m where g.id = m.group_id and m.member_id = ? and g.identity_zone_id=?";
+    private String AUTHORITIES_QUERY = "select g.id,g.displayName from groups g, group_membership m where g.id = m.group_id and m.member_id = ?";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -95,7 +95,7 @@ public class JdbcUaaUserDatabase implements UaaUserDatabase {
     public UaaUser retrieveUserByName(String username, String origin) throws UsernameNotFoundException {
         try {
             String sql = isCaseInsensitive() ? DEFAULT_CASE_INSENSITIVE_USER_BY_USERNAME_QUERY : DEFAULT_CASE_SENSITIVE_USER_BY_USERNAME_QUERY;
-            return jdbcTemplate.queryForObject(sql, mapper, username.toLowerCase(Locale.US), true, origin);
+            return jdbcTemplate.queryForObject(sql, mapper, username.toLowerCase(Locale.US), true);
         } catch (EmptyResultDataAccessException e) {
             throw new UsernameNotFoundException(username);
         }
