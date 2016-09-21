@@ -10,32 +10,19 @@
  *     subcomponents is subject to the terms and conditions of the
  *     subcomponent's license, as noted in the LICENSE file.
  *******************************************************************************/
-package com.getxinfo.audit.event;
+package com.getxinfo.authentication;
 
+import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
-
-import com.getxinfo.audit.UaaAuditService;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 
 /**
- * Spring {@code ApplicationListener} which picks up the listens for
- * {@code AbstractUaaEvent}s and passes the relevant
- * information to the {@code UaaAuditService}.
- * 
  * @author Luke Taylor
- * @author Dave Syer
  */
-@Component("loggingAuditListener")
-public class AuditListener implements ApplicationListener<AbstractUaaEvent> {
-	
-	@Autowired
-    private UaaAuditService uaaAuditService;
-
+public class UaaAuthenticationDetailsSource implements
+                AuthenticationDetailsSource<HttpServletRequest, UaaAuthenticationDetails> {
     @Override
-    public void onApplicationEvent(AbstractUaaEvent event) {
-        event.process(uaaAuditService);
+    public UaaAuthenticationDetails buildDetails(HttpServletRequest context) {
+        return new UaaAuthenticationDetails(context);
     }
-
 }

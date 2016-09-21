@@ -47,7 +47,7 @@ public class UserNotFoundEvent extends AbstractUaaAuthenticationEvent {
             name = "NOSHA";
         }
 
-        return createAuditRecord(name, AuditEventType.UserNotFound, getOrigin(getAuthenticationDetails()));
+        return createAuditRecord(name, AuditEventType.UserNotFound);
 
     }
 }

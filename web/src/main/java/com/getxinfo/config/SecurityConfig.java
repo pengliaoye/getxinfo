@@ -47,6 +47,7 @@ import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
+import com.getxinfo.authentication.UaaAuthenticationDetailsSource;
 import com.getxinfo.service.ImplicitConnectionSignup;
 import com.getxinfo.service.SimpleSocialUsersDetailService;
 
@@ -66,10 +67,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/login/**", "/assets/**", "/auth/**").permitAll()
+				.antMatchers("/verify_user").anonymous()
 				.antMatchers("/**").authenticated()
 			.and()
 				.formLogin()
 					.loginPage("/login")
+					.authenticationDetailsSource(authenticationDetailsSource())
 					.successHandler(successHandler())
 					.failureHandler(failureHandler())
 			.and()
@@ -79,13 +82,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
-				.apply(new SpringSocialConfigurer());
-		;
+				.apply(new SpringSocialConfigurer());		
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/create_account*");
+		web.ignoring().antMatchers("/create_account*", "/h2-console/**");
+	}
+	
+	@Bean
+	public UaaAuthenticationDetailsSource authenticationDetailsSource(){
+		return new UaaAuthenticationDetailsSource();
 	}
 
 	@Bean

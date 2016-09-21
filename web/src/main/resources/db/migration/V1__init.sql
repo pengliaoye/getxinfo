@@ -59,10 +59,8 @@ CREATE TABLE group_membership (
 CREATE TABLE sec_audit (
    principal_id VARCHAR(255) not null,
    event_type INTEGER not null,
-   origin VARCHAR(255) not null,
    event_data VARCHAR(255),
-   created TIMESTAMP default current_timestamp,
-   identity_zone_id varchar(36) DEFAULT 'uaa'
+   created TIMESTAMP default current_timestamp
 ) ;
 
 CREATE TABLE expiring_code_store (

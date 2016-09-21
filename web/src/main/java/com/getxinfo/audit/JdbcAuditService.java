@@ -50,7 +50,7 @@ public class JdbcAuditService implements UaaAuditService {
         String data = auditEvent.getData();
         data = data == null ? "" : data;
         data = data.length() > 255 ? data.substring(0, 255) : data;
-        template.update("insert into sec_audit (principal_id, event_type, event_data) values (?,?,?,?,?)",
+        template.update("insert into sec_audit (principal_id, event_type, event_data) values (?,?,?)",
                         auditEvent.getPrincipalId(), auditEvent.getType().getCode(), data);
     }
 
@@ -59,8 +59,8 @@ public class JdbcAuditService implements UaaAuditService {
         public AuditEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
             AuditEventType eventType = AuditEventType.fromCode(rs.getInt(1));
             String principalId = nullSafeTrim(rs.getString(2));
-            String data = nullSafeTrim(rs.getString(4));
-            long time = rs.getTimestamp(5).getTime();
+            String data = nullSafeTrim(rs.getString(3));
+            long time = rs.getTimestamp(4).getTime();
             return new AuditEvent(eventType, principalId, data, time);
         }
     }
