@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("/login/**", "/assets/**", "/auth/**").permitAll()
+				.antMatchers("/login/**", "/auth/**").permitAll()
 				.antMatchers("/verify_user").anonymous()
 				.antMatchers("/**").authenticated()
 			.and()
@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/create_account*", "/h2-console/**");
+		web.ignoring().antMatchers("/create_account*", "/h2-console/**", "/vendor/**", "/resources/**", "/assets/**");
 	}
 	
 	@Bean
