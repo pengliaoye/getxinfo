@@ -75,7 +75,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser>
 
     public static final String DEACTIVATE_USER_SQL = "update users set active=? where id=? and identity_zone_id=?";
 
-    public static final String VERIFY_USER_SQL = "update users set verified=? where id=? and identity_zone_id=?";
+    public static final String VERIFY_USER_SQL = "update users set verified=? where id=?";
 
     public static final String DELETE_USER_SQL = "delete from users where id=? and identity_zone_id=?";
 
@@ -365,10 +365,10 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser>
         int updated;
         if (version < 0) {
             // Ignore
-            updated = jdbcTemplate.update(VERIFY_USER_SQL, true, id, null);
+            updated = jdbcTemplate.update(VERIFY_USER_SQL, true, id);
         }
         else {
-            updated = jdbcTemplate.update(VERIFY_USER_SQL + " and version=?", true, id, null, version);
+            updated = jdbcTemplate.update(VERIFY_USER_SQL + " and version=?", true, id, version);
         }
         ScimUser user = retrieve(id);
         if (updated == 0) {
