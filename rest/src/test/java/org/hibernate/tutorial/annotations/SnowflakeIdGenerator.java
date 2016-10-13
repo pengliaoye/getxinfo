@@ -1,4 +1,4 @@
-package org.hibernate.tutorial.hbm;
+package org.hibernate.tutorial.annotations;
 
 import java.io.Serializable;
 

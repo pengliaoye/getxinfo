@@ -21,11 +21,22 @@
  * 51 Franklin Street, Fifth Floor
  * Boston, MA  02110-1301  USA
  */
-package org.hibernate.tutorial.hbm;
+package org.hibernate.tutorial.annotations;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+
+@Entity
 public class Event {
+	
+	@Id
+	@GeneratedValue
 	private Long id;
 
 	private String title;
@@ -49,6 +60,7 @@ public class Event {
 		this.id = id;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDate() {
 		return date;
 	}
@@ -64,4 +76,4 @@ public class Event {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-}
+	}
