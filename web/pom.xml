@@ -141,6 +141,12 @@
 		    <artifactId>p6spy</artifactId>
 		    <version>3.0.0-rc2</version>
 		</dependency>	    			
+		
+	    <dependency>
+	        <groupId>cn.gb2260</groupId>
+	        <artifactId>GB2260</artifactId>
+	        <version>0.1.1</version>
+	    </dependency>		
 
 	</dependencies>
 
