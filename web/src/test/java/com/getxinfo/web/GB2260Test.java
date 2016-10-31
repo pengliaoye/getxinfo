@@ -20,17 +20,11 @@ public class GB2260Test {
 			List<Division> cities = gb.getPrefectures(code);
 			for(Division city : cities){				
 				String cityCode = city.getCode();
-				if(cityCode.equals(code)){
-					continue;
-				}
 				String cityName = city.getName();
 				System.out.println("  |--" + cityCode + " " + cityName);								
 				List<Division> districts = gb.getCounties(cityCode);
 				for(Division district : districts){
 					String districtCode = district.getCode();
-					if(cityCode.equals(districtCode)){
-						continue;
-					}
 					String districtName = district.getName();
 					System.out.println("  |  |--" + districtCode + " " + districtName);
 				}
