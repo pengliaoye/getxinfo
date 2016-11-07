@@ -88,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/create_account*", "/h2-console/**", "/vendor/**", "/resources/**", "/assets/**");
+		web.ignoring().antMatchers("/upload.html", "/cors/**", "/img/**", "/form");
 	}
 	
 	@Bean

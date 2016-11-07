@@ -15,5 +15,13 @@ public class ConfigTest {
 		int bar1 = conf.getInt("foo.bar");
 		Assert.assertEquals(10, bar1);
 	}
+	
+	@Test
+	public void testInt(){
+		int i = 1049999990;
+		float f = (float)i;
+		String str = String.format("%f", f);
+		System.out.println(str);
+	}
 
 }
