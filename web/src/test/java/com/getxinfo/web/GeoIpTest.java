@@ -7,6 +7,10 @@ import java.net.InetAddress;
 import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
@@ -27,7 +31,7 @@ public class GeoIpTest {
 		// lookups.
 		DatabaseReader reader = new DatabaseReader.Builder(database).build();
 
-		InetAddress ipAddress = InetAddress.getByName("106.92.241.139");
+		InetAddress ipAddress = InetAddress.getByName("58.17.133.8");
 
 		// Replace "city" with the appropriate method for your database, e.g.,
 		// "country".
@@ -52,6 +56,16 @@ public class GeoIpTest {
 		Location location = response.getLocation();
 		System.out.println(location.getLatitude()); // 44.9733
 		System.out.println(location.getLongitude()); // -93.2323
+		
+		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyB-mE0UlWMolk0_m6U3-tgy7li-KGnDz6Y");
+		try {
+			GeocodingResult[] results = GeocodingApi.reverseGeocode(context, latLng).await();
+			System.out.println(results[0].formattedAddress);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
