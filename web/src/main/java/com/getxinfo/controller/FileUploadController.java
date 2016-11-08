@@ -38,6 +38,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.drew.imaging.FileType;
 import com.drew.imaging.FileTypeDetector;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import com.getxinfo.config.StorageProperties;
 
 @RestController
@@ -206,7 +209,9 @@ public class FileUploadController {
 		File file = new File(filePath);
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			BufferedInputStream inputStream = new BufferedInputStream(fis);
+			Metadata metadata = ImageMetadataReader.readMetadata(fis);
+			
+			BufferedInputStream inputStream = new BufferedInputStream(fis);			
 			FileType fileType = FileTypeDetector.detectFileType(inputStream);
 			String extension = null;
 			if (fileType == FileType.Jpeg) {
@@ -216,7 +221,7 @@ public class FileUploadController {
 			} else if (fileType == FileType.Gif) {
 				
 			}
-		} catch (IOException e) {
+		} catch (IOException | ImageProcessingException e) {
 			throw new RuntimeException(e);
 		} 
 		return name;
