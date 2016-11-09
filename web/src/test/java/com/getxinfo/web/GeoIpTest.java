@@ -32,6 +32,7 @@ public class GeoIpTest {
 		DatabaseReader reader = new DatabaseReader.Builder(database).build();
 
 		InetAddress ipAddress = InetAddress.getByName("58.17.133.8");
+		//InetAddress ipAddress = InetAddress.getByName("115.28.184.47");
 
 		// Replace "city" with the appropriate method for your database, e.g.,
 		// "country".
