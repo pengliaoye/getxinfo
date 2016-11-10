@@ -3,10 +3,17 @@ package com.getxinfo.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Arrays;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.getxinfo.ReverseGeoCodeResponse;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
@@ -59,6 +66,22 @@ public class GeoIpTest {
 		System.out.println(location.getLongitude()); // -93.2323
 		
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		LatLng latLng2 = new LatLng(22.198745, 113.54387299999999);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://api.map.baidu.com/geocoder/v2/")
+														   .queryParam("ak", "keY3TMAqKN3N0sdXn1Wb8g4ApHDhcLtt")
+														   .queryParam("location", latLng2)
+														   .queryParam("output","json")
+														   .queryParam("coordtype", "wgs84ll");		
+		RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());
+		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, new MediaType("text", "javascript")));
+		restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
+		
+		ReverseGeoCodeResponse reverseGeoCodeResponse = restTemplate.getForObject(builder.toUriString(), ReverseGeoCodeResponse.class);
+		System.out.println(reverseGeoCodeResponse.getStatus());
+		System.out.println(reverseGeoCodeResponse.getResult().getFormatted_address());
+		System.out.println(reverseGeoCodeResponse.getResult().getAddressComponent().getAdcode());
+				
 		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyB-mE0UlWMolk0_m6U3-tgy7li-KGnDz6Y");
 		try {
 			GeocodingResult[] results = GeocodingApi.reverseGeocode(context, latLng).await();

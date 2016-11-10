@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class FileUploadController {
 
 		options = new HashMap<>();
 		options.put("param_name", "files");
+		options.put("correct_image_extensions", false);
 	}
 
 	@GetMapping
@@ -84,7 +86,7 @@ public class FileUploadController {
 		List<Map<String, Object>> files = new ArrayList<>();
 		if (upload != null) {
 			for (MultipartFile file : upload) {
-				Map<String, Object> fileMeta = handleFileUpload(file, file.getName(), file.getSize(),
+				Map<String, Object> fileMeta = handleFileUpload(request, file, file.getName(), file.getSize(),
 						file.getContentType());
 				files.add(fileMeta);
 			}
@@ -94,12 +96,19 @@ public class FileUploadController {
 		return response;
 	}
 
-	public Map<String, Object> handleFileUpload(MultipartFile file, String name, long size, String type) {
+	public Map<String, Object> handleFileUpload(HttpServletRequest request, MultipartFile file, String name, long size,
+			String type) {
 		Map<String, Object> fileMeta = new HashMap<>();
-		fileMeta.put("name", "");
-		fileMeta.put("size", "");
-		fileMeta.put("type", "");
+		fileMeta.put("name", getFileName(null, name, size, type));
+		fileMeta.put("size", size);
+		fileMeta.put("type", type);
 		return fileMeta;
+	}
+
+	public boolean validate(HttpServletRequest request, MultipartFile file, Map<String, Object> fileMeta) {
+		long contentLength = request.getContentLengthLong();
+
+		return true;
 	}
 
 	public String getUploadPath() {
@@ -199,38 +208,78 @@ public class FileUploadController {
 		return name;
 	}
 
-	public String fixFileExtension(String filePath, String name, String type) {
+	public String upCountName(String name) {
+		StringBuffer resultString = new StringBuffer();
+		Pattern regex = Pattern.compile("(?:(?: \\(([\\d]+)\\))?(\\.[^.]+))?$");
+		Matcher regexMatcher = regex.matcher(name);
+		if (regexMatcher.find()) {
+			String index = regexMatcher.group(1);
+			int idx = 1;
+			if (index != null) {
+				idx = Integer.valueOf(index) + 1;
+			}
+			String ext = regexMatcher.group(2);
+			regexMatcher.appendReplacement(resultString, " (" + idx + ")" + ext);
+		}
+		regexMatcher.appendTail(resultString);
+		return resultString.toString();
+	}
+
+	public String getUniqueFileName(String filePath, String name, long size, String type) {
+		while (new File(getUploadPath(name)).isDirectory()) {
+			name = upCountName(name);
+		}
+
+		while (new File(getUploadPath(name)).isFile()) {
+
+			name = upCountName(name);
+		}
+		return name;
+	}
+
+	public String fixFileExtension(String filePath, String name, long size, String type) {
 		Pattern pattern = Pattern.compile("^image\\/(gif|jpe?g|png)");
 		Matcher matcher = pattern.matcher(type);
 		if (name.indexOf(".") < 0 && matcher.matches()) {
 			name = name + "." + matcher.group(1);
 		}
-		
-		File file = new File(filePath);
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			Metadata metadata = ImageMetadataReader.readMetadata(fis);
-			
-			BufferedInputStream inputStream = new BufferedInputStream(fis);			
-			FileType fileType = FileTypeDetector.detectFileType(inputStream);
-			String extension = null;
-			if (fileType == FileType.Jpeg) {
-				extension = "jpg";
-			} else if (fileType == FileType.Png) {
-				extension = "png";
-			} else if (fileType == FileType.Gif) {
-				
+
+		boolean b = (boolean) options.get("correct_image_extensions");
+		if (b) {
+			try {
+				File file = new File(filePath);
+				FileInputStream fis = new FileInputStream(file);
+				Metadata metadata = ImageMetadataReader.readMetadata(fis);
+				BufferedInputStream inputStream = new BufferedInputStream(fis);
+				FileType fileType = FileTypeDetector.detectFileType(inputStream);
+				String[] extensions = null;
+				if (fileType == FileType.Jpeg) {
+					extensions = new String[] { "jpg", "jpeg" };
+				} else if (fileType == FileType.Png) {
+					extensions = new String[] { "png" };
+				} else if (fileType == FileType.Gif) {
+					extensions = new String[] { "gif" };
+				}
+				if (extensions != null) {
+					String[] parts = name.split(".");
+					int extIndex = parts.length - 1;
+					String ext = parts[extIndex].toLowerCase();
+					boolean contains = Arrays.asList(extensions).contains(ext);
+					if (!contains) {
+						parts[extIndex] = extensions[0];
+						name = StringUtils.join(parts, ".");
+					}
+				}
+			} catch (IOException | ImageProcessingException e) {
+				throw new RuntimeException(e);
 			}
-		} catch (IOException | ImageProcessingException e) {
-			throw new RuntimeException(e);
-		} 
+		}
 		return name;
 	}
 
 	public String getFileName(String filePath, String name, long size, String type) {
 		name = trimFileName(name);
-
-		return name;
+		return getUniqueFileName(filePath, fixFileExtension(filePath, name, size, type), size, type);
 	}
 
 	public String getUserPath() {
