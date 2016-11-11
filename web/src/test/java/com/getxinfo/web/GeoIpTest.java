@@ -46,6 +46,7 @@ public class GeoIpTest {
 		CityResponse response = reader.city(ipAddress);
 
 		Country country = response.getCountry();
+		System.out.println(country.getGeoNameId());
 		System.out.println(country.getIsoCode()); // 'US'
 		System.out.println(country.getName()); // 'United States'
 		System.out.println(country.getNames().get("zh-CN")); // '美国'
