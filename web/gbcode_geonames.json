@@ -628,8 +628,8 @@
     "geoname" : "白山"
   },
   "530800" : {
-    "geonameId" : 1794207,
-    "geoname" : "Simao Qu"
+    "geonameId" : 1794208,
+    "geoname" : "思茅"
   },
   "230400" : {
     "geonameId" : 2036985,
@@ -1346,5 +1346,17 @@
   "620700" : {
     "geonameId" : 1785035,
     "geoname" : "张掖"
-  }
+  },
+  "810000" : {
+    "geonameId" : 1819730,
+    "geoname" : "香港"
+  },
+  "710000" : {
+    "geonameId" : 1668284,
+    "geoname" : "台湾"
+  },
+  "820000" : {
+    "geonameId" : 1821275,
+    "geoname" : "澳门"
+  }      
 }

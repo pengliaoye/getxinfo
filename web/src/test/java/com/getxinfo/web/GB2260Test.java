@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.geonames.Style;
 import org.geonames.Toponym;
+import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
 import org.junit.Test;
@@ -35,37 +36,20 @@ public class GB2260Test {
 		FileInputStream fis = new FileInputStream("gbcode_geonames.json");
 		Map<String, Object> geoNameMap = reader.readValue(fis);
 
-		int i = 0;
-		List<String> noGeoNameCityNames = new ArrayList<>();
-
 		GB2260 gb = new GB2260();
 		List<Division> provinces = gb.getProvinces();
 		for (Division province : provinces) {
 			String code = province.getCode();
 			String name = province.getName();
 
-			System.out.println(code + " " + name);
+			printNameInfo(geoNameMap, 1, code, name);
 
 			List<Division> cities = gb.getPrefectures(code);
 			for (Division city : cities) {
 				String cityCode = city.getCode();
 				String cityName = city.getName();
 
-				Integer geonameId = null;
-				String geoname = null;
-				Map<String, Object> nameMap = (Map) geoNameMap.get(cityCode);
-				if (nameMap != null) {
-					geonameId = (Integer) nameMap.get("geonameId");
-					geoname = (String) nameMap.get("geoname");
-				}
-
-				i++;
-				if (geonameId != null) {
-					System.out.println("  |--" + cityCode + "(" + geonameId + ", " + geoname + ") " + cityName);
-				} else {
-					noGeoNameCityNames.add(cityName);
-					System.out.println("  |--" + cityCode + " " + cityName);
-				}
+				printNameInfo(geoNameMap, 2, cityCode, cityName);
 
 				List<Division> districts = gb.getCounties(cityCode);
 				for (Division district : districts) {
@@ -76,9 +60,41 @@ public class GB2260Test {
 			}
 		}
 
-		System.out.println(noGeoNameCityNames);
-		System.out.println(noGeoNameCityNames.size());
-		System.out.println(i);
+	}
+
+	private void printNameInfo(Map<String, Object> geoNameMap, int level, String code, String name) {
+		Integer geonameId = null;
+		String geoname = null;
+		Map<String, Object> nameMap = (Map) geoNameMap.get(code);
+		if (nameMap != null) {
+			geonameId = (Integer) nameMap.get("geonameId");
+			geoname = (String) nameMap.get("geoname");
+		}
+
+		if (level == 2) {
+			System.out.print("  |--");
+		}
+
+		if (geonameId != null) {
+			System.out.println(code + "(" + geonameId + ", " + geoname + ") " + name);
+		} else {
+			System.out.println(code + " " + name);
+		}
+	}
+
+	@Test
+	public void testGeoName() throws Exception {
+		WebService.setUserName("pengliaoye");
+		String lang = "zh";
+		Style style = Style.SHORT;
+		List<Integer> list = new ArrayList<>();
+		list.add(1819730);
+		list.add(1668284);
+		list.add(1821275);
+		for (Integer val : list) {
+			String geoName = WebService.get(val, lang, style.name()).getName();
+			System.out.println(val + "  " + geoName);
+		}
 	}
 
 	private String getGeoName(List<Map<Integer, Object>> statesList, Integer val) throws Exception {
