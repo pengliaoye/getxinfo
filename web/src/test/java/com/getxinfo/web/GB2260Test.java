@@ -42,20 +42,20 @@ public class GB2260Test {
 			String code = province.getCode();
 			String name = province.getName();
 
-			printNameInfo(geoNameMap, 1, code, name);
+			printNameInfo(geoNameMap, 0, code, name);
 
 			List<Division> cities = gb.getPrefectures(code);
 			for (Division city : cities) {
 				String cityCode = city.getCode();
 				String cityName = city.getName();
 
-				printNameInfo(geoNameMap, 2, cityCode, cityName);
+				printNameInfo(geoNameMap, 1, cityCode, cityName);
 
 				List<Division> districts = gb.getCounties(cityCode);
 				for (Division district : districts) {
 					String districtCode = district.getCode();
 					String districtName = district.getName();
-					System.out.println("  |  |--" + districtCode + " " + districtName);
+					printNameInfo(geoNameMap, 2, districtCode, districtName);
 				}
 			}
 		}
@@ -71,8 +71,11 @@ public class GB2260Test {
 			geoname = (String) nameMap.get("geoname");
 		}
 
-		if (level == 2) {
-			System.out.print("  |--");
+		if (level > 0) {
+			for(int i = 0; i < level; i++){
+				System.out.print("  |");
+			}
+			System.out.print("--");
 		}
 
 		if (geonameId != null) {
