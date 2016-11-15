@@ -13,7 +13,10 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.getxinfo.BaiduIpinfoResponse;
+import com.getxinfo.QQIpinfoResponse;
 import com.getxinfo.ReverseGeoCodeResponse;
+import com.getxinfo.TaobaoIpinfoResponse;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
@@ -38,8 +41,9 @@ public class GeoIpTest {
 		// lookups.
 		DatabaseReader reader = new DatabaseReader.Builder(database).build();
 
-		InetAddress ipAddress = InetAddress.getByName("58.17.133.8");
-		//InetAddress ipAddress = InetAddress.getByName("115.28.184.47");
+		// InetAddress ipAddress = InetAddress.getByName("58.17.133.8");
+		// InetAddress ipAddress = InetAddress.getByName("115.28.184.47");
+		 InetAddress ipAddress = InetAddress.getByName("139.129.216.131");
 
 		// Replace "city" with the appropriate method for your database, e.g.,
 		// "country".
@@ -65,24 +69,38 @@ public class GeoIpTest {
 		Location location = response.getLocation();
 		System.out.println(location.getLatitude()); // 44.9733
 		System.out.println(location.getLongitude()); // -93.2323
-		
+					
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		LatLng latLng2 = new LatLng(22.198745, 113.54387299999999);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://api.map.baidu.com/geocoder/v2/")
 														   .queryParam("ak", "keY3TMAqKN3N0sdXn1Wb8g4ApHDhcLtt")
-														   .queryParam("location", latLng2)
+														   .queryParam("location", latLng)
 														   .queryParam("output","json")
 														   .queryParam("coordtype", "wgs84ll");		
 		RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());
 		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, new MediaType("text", "javascript")));
+		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, new MediaType("text", "*")));
 		restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 		
 		ReverseGeoCodeResponse reverseGeoCodeResponse = restTemplate.getForObject(builder.toUriString(), ReverseGeoCodeResponse.class);
 		System.out.println(reverseGeoCodeResponse.getStatus());
 		System.out.println(reverseGeoCodeResponse.getResult().getFormatted_address());
 		System.out.println(reverseGeoCodeResponse.getResult().getAddressComponent().getAdcode());
-				
+		
+		// qq
+		QQIpinfoResponse qqIpinfoResponse = restTemplate.getForObject(String.format("http://apis.map.qq.com/ws/location/v1/ip?ip=%s&key=W52BZ-CJIRF-UATJV-NNTXU-WWPSS-ZTFBJ", "139.129.216.131"), QQIpinfoResponse.class);
+		System.out.println(qqIpinfoResponse.getResult().getAd_info().getAdcode());
+		System.out.println(qqIpinfoResponse.getResult().getAd_info().getCity());
+		
+		// taobao
+		TaobaoIpinfoResponse taobaoIpinfoResponse = restTemplate.getForObject(String.format("http://ip.taobao.com/service/getIpInfo.php?ip=%s", "139.129.216.131"), TaobaoIpinfoResponse.class);
+		System.out.println(taobaoIpinfoResponse.getData().getCity_id());
+		System.out.println(taobaoIpinfoResponse.getData().getCity());
+		// baidu		
+		String baiduLocUrl = String.format("https://api.map.baidu.com/location/ip?ip=%s&ak=keY3TMAqKN3N0sdXn1Wb8g4ApHDhcLtt", "139.129.216.131");
+		BaiduIpinfoResponse baiduIpinfoResponse = restTemplate.getForObject(baiduLocUrl, BaiduIpinfoResponse.class);
+		System.out.println(baiduIpinfoResponse.getContent().getAddress_detail().getCity_code());
+		System.out.println(baiduIpinfoResponse.getContent().getAddress_detail().getCity());
+		
 		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyB-mE0UlWMolk0_m6U3-tgy7li-KGnDz6Y");
 		try {
 			GeocodingResult[] results = GeocodingApi.reverseGeocode(context, latLng).await();
