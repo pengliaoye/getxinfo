@@ -4,6 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -109,6 +115,18 @@ public class GeoIpTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testTelSegment() throws ScriptException{
+		RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());
+		String str = restTemplate.getForObject("https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=13389600105", String.class);	
+        ScriptEngineManager engineManager = new ScriptEngineManager();
+        ScriptEngine engine = engineManager.getEngineByName("nashorn");
+        Map<String, Object> map = new HashMap<>();
+        engine.put("map", map);
+        engine.eval(str+ "for(var key in __GetZoneResult_){map.put(key, __GetZoneResult_[key]);}");
+        System.out.println(map);;
 	}
 
 }
