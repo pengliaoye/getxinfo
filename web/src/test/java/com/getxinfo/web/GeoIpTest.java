@@ -3,6 +3,7 @@ package com.getxinfo.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
@@ -139,7 +141,9 @@ public class GeoIpTest {
 	
 	@Test
 	public void testWeather(){
+		StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
 		RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());		
+		restTemplate.setMessageConverters(Arrays.asList(converter));		
 		MultiValueMap<String, String> headers = new HttpHeaders();
 		headers.add("Referer", "http://e.weather.com.cn/");
 		ResponseEntity<String> respEntity = restTemplate.exchange("http://d1.weather.com.cn/weixinfc_gw/101040100.html", HttpMethod.GET, new HttpEntity<>(headers), String.class);
