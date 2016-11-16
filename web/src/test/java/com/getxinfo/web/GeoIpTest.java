@@ -12,9 +12,14 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.junit.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -130,6 +135,15 @@ public class GeoIpTest {
         engine.put("map", map);
         engine.eval(str+ "for(var key in __GetZoneResult_){map.put(key, __GetZoneResult_[key]);}");
         System.out.println(map);;
+	}
+	
+	@Test
+	public void testWeather(){
+		RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());		
+		MultiValueMap<String, String> headers = new HttpHeaders();
+		headers.add("Referer", "http://e.weather.com.cn/");
+		ResponseEntity<String> respEntity = restTemplate.exchange("http://d1.weather.com.cn/weixinfc_gw/101040100.html", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		System.out.println(respEntity.getBody());
 	}
 
 }
