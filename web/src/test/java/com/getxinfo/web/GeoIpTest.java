@@ -75,6 +75,9 @@ public class GeoIpTest {
 		Location location = response.getLocation();
 		System.out.println(location.getLatitude()); // 44.9733
 		System.out.println(location.getLongitude()); // -93.2323
+		
+		// 卡号查银行 https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=6228430120000000000&cardBinCheck=true
+		// 菜谱 http://www.tngou.net/api/cook/list
 					
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://api.map.baidu.com/geocoder/v2/")
