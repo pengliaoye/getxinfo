@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Base64;
 
+import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,11 +19,56 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.getxinfo.util.HmacUtil;
+import com.getxinfo.util.Md5Util;
+import com.getxinfo.wsdl.RegisterService;
+import com.getxinfo.wsdl.RegisterServiceLocator;
+import com.getxinfo.wsdl.Register_PortType;
+import com.getxinfo.wsdl.SendSMSService;
+import com.getxinfo.wsdl.SendSMSServiceLocator;
+import com.getxinfo.wsdl.SendSMS_PortType;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 
 public class ConfigTest {
+	
+	@Test
+	public void testGetRegister() throws Exception{
+		String uc = "";
+		String pwd = "";
+		String message = "发送消息";
+		String callbackUrl = "http://210.21.97.30:8080/axis1/services/myWebService";
+		int msgID = 99999;
+		
+		String cont = Base64.getEncoder().encodeToString(message.getBytes("GBK"));
+		
+		RegisterService service = new RegisterServiceLocator(); 
+		Register_PortType register = service.getRegister();
+		String rand = register.getRandom();		
+		System.out.println("rand="+rand);
+		
+		String pw = Md5Util.encode(rand + pwd + pwd);
+			
+		String connID = "810284186940176432";
+		//String connID = register.setCallBackAddrV2(uc, pw, rand, callbackUrl, "2.0");
+		//System.out.println("connID="+connID);
+		
+		SendSMSService smsService = new SendSMSServiceLocator();
+		SendSMS_PortType sendSms = smsService.getSendSMS();
+		String str = sendSms.sendSMSV2(uc, pw, rand, new String[]{"13658422301", "13389600105"}, "1", cont, msgID, connID, 15);		
+		System.out.println("sms_return="+str);
+	}	
+	
+	@Test
+	public void testHmac(){
+		String key = HmacUtil.getHmaSHA256key();
+		System.out.println(key);		
+		String str = HmacUtils.hmacSha256Hex(key, "123");
+		System.out.println(str);
+		String str1 = HmacUtils.hmacSha256Hex(key, "123");
+		System.out.println(str1);
+	}
 		
 	@Test
 	public void testConfig(){
