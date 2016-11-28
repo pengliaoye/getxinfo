@@ -21,12 +21,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.getxinfo.util.HmacUtil;
 import com.getxinfo.util.Md5Util;
-import com.getxinfo.wsdl.RegisterService;
-import com.getxinfo.wsdl.RegisterServiceLocator;
-import com.getxinfo.wsdl.Register_PortType;
-import com.getxinfo.wsdl.SendSMSService;
-import com.getxinfo.wsdl.SendSMSServiceLocator;
-import com.getxinfo.wsdl.SendSMS_PortType;
+import com.getxinfo.ws.RegisterProxy;
+import com.getxinfo.ws.SendSMSProxy;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -43,20 +39,18 @@ public class ConfigTest {
 		
 		String cont = Base64.getEncoder().encodeToString(message.getBytes("GBK"));
 		
-		RegisterService service = new RegisterServiceLocator(); 
-		Register_PortType register = service.getRegister();
-		String rand = register.getRandom();		
+		RegisterProxy registerProxy = new RegisterProxy(); 
+		String rand = registerProxy.getRandom();		
 		System.out.println("rand="+rand);
 		
 		String pw = Md5Util.encode(rand + pwd + pwd);
 			
 		String connID = "810284186940176432";
-		//String connID = register.setCallBackAddrV2(uc, pw, rand, callbackUrl, "2.0");
+		//String connID = registerProxy.setCallBackAddrV2(uc, pw, rand, callbackUrl, "2.0");
 		//System.out.println("connID="+connID);
 		
-		SendSMSService smsService = new SendSMSServiceLocator();
-		SendSMS_PortType sendSms = smsService.getSendSMS();
-		String str = sendSms.sendSMSV2(uc, pw, rand, new String[]{"13658422301", "13389600105"}, "1", cont, msgID, connID, 15);		
+		SendSMSProxy smsProxy = new SendSMSProxy();
+		String str = smsProxy.sendSMSV2(uc, pw, rand, new String[]{"13658422301", "13389600105"}, "1", cont, msgID, connID, 15);		
 		System.out.println("sms_return="+str);
 	}	
 	

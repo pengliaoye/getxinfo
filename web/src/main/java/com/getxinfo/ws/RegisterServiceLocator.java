@@ -5,9 +5,9 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.getxinfo.wsdl;
+package com.getxinfo.ws;
 
-public class RegisterServiceLocator extends org.apache.axis.client.Service implements com.getxinfo.wsdl.RegisterService {
+public class RegisterServiceLocator extends org.apache.axis.client.Service implements com.getxinfo.ws.RegisterService {
 
     public RegisterServiceLocator() {
     }
@@ -39,7 +39,7 @@ public class RegisterServiceLocator extends org.apache.axis.client.Service imple
         RegisterWSDDServiceName = name;
     }
 
-    public com.getxinfo.wsdl.Register_PortType getRegister() throws javax.xml.rpc.ServiceException {
+    public com.getxinfo.ws.Register getRegister() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(Register_address);
@@ -50,9 +50,9 @@ public class RegisterServiceLocator extends org.apache.axis.client.Service imple
         return getRegister(endpoint);
     }
 
-    public com.getxinfo.wsdl.Register_PortType getRegister(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public com.getxinfo.ws.Register getRegister(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            com.getxinfo.wsdl.RegisterSoapBindingStub _stub = new com.getxinfo.wsdl.RegisterSoapBindingStub(portAddress, this);
+            com.getxinfo.ws.RegisterSoapBindingStub _stub = new com.getxinfo.ws.RegisterSoapBindingStub(portAddress, this);
             _stub.setPortName(getRegisterWSDDServiceName());
             return _stub;
         }
@@ -72,8 +72,8 @@ public class RegisterServiceLocator extends org.apache.axis.client.Service imple
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (com.getxinfo.wsdl.Register_PortType.class.isAssignableFrom(serviceEndpointInterface)) {
-                com.getxinfo.wsdl.RegisterSoapBindingStub _stub = new com.getxinfo.wsdl.RegisterSoapBindingStub(new java.net.URL(Register_address), this);
+            if (com.getxinfo.ws.Register.class.isAssignableFrom(serviceEndpointInterface)) {
+                com.getxinfo.ws.RegisterSoapBindingStub _stub = new com.getxinfo.ws.RegisterSoapBindingStub(new java.net.URL(Register_address), this);
                 _stub.setPortName(getRegisterWSDDServiceName());
                 return _stub;
             }

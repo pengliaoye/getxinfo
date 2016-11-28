@@ -5,9 +5,9 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.getxinfo.wsdl;
+package com.getxinfo.ws;
 
-public class RegisterSoapBindingStub extends org.apache.axis.client.Stub implements com.getxinfo.wsdl.Register_PortType {
+public class RegisterSoapBindingStub extends org.apache.axis.client.Stub implements com.getxinfo.ws.Register {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -85,7 +85,7 @@ public class RegisterSoapBindingStub extends org.apache.axis.client.Stub impleme
         } else {
             super.service = service;
         }
-        ((org.apache.axis.client.Service)super.service).setTypeMappingVersion("1.1");
+        ((org.apache.axis.client.Service)super.service).setTypeMappingVersion("1.2");
     }
 
     protected org.apache.axis.client.Call createCall() throws java.rmi.RemoteException {

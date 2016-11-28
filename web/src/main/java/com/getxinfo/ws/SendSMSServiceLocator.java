@@ -5,9 +5,9 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.getxinfo.wsdl;
+package com.getxinfo.ws;
 
-public class SendSMSServiceLocator extends org.apache.axis.client.Service implements com.getxinfo.wsdl.SendSMSService {
+public class SendSMSServiceLocator extends org.apache.axis.client.Service implements com.getxinfo.ws.SendSMSService {
 
     public SendSMSServiceLocator() {
     }
@@ -39,7 +39,7 @@ public class SendSMSServiceLocator extends org.apache.axis.client.Service implem
         SendSMSWSDDServiceName = name;
     }
 
-    public com.getxinfo.wsdl.SendSMS_PortType getSendSMS() throws javax.xml.rpc.ServiceException {
+    public com.getxinfo.ws.SendSMS getSendSMS() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(SendSMS_address);
@@ -50,9 +50,9 @@ public class SendSMSServiceLocator extends org.apache.axis.client.Service implem
         return getSendSMS(endpoint);
     }
 
-    public com.getxinfo.wsdl.SendSMS_PortType getSendSMS(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public com.getxinfo.ws.SendSMS getSendSMS(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            com.getxinfo.wsdl.SendSMSSoapBindingStub _stub = new com.getxinfo.wsdl.SendSMSSoapBindingStub(portAddress, this);
+            com.getxinfo.ws.SendSMSSoapBindingStub _stub = new com.getxinfo.ws.SendSMSSoapBindingStub(portAddress, this);
             _stub.setPortName(getSendSMSWSDDServiceName());
             return _stub;
         }
@@ -72,8 +72,8 @@ public class SendSMSServiceLocator extends org.apache.axis.client.Service implem
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (com.getxinfo.wsdl.SendSMS_PortType.class.isAssignableFrom(serviceEndpointInterface)) {
-                com.getxinfo.wsdl.SendSMSSoapBindingStub _stub = new com.getxinfo.wsdl.SendSMSSoapBindingStub(new java.net.URL(SendSMS_address), this);
+            if (com.getxinfo.ws.SendSMS.class.isAssignableFrom(serviceEndpointInterface)) {
+                com.getxinfo.ws.SendSMSSoapBindingStub _stub = new com.getxinfo.ws.SendSMSSoapBindingStub(new java.net.URL(SendSMS_address), this);
                 _stub.setPortName(getSendSMSWSDDServiceName());
                 return _stub;
             }

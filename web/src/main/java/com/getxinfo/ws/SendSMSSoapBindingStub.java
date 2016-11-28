@@ -5,9 +5,9 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.getxinfo.wsdl;
+package com.getxinfo.ws;
 
-public class SendSMSSoapBindingStub extends org.apache.axis.client.Stub implements com.getxinfo.wsdl.SendSMS_PortType {
+public class SendSMSSoapBindingStub extends org.apache.axis.client.Stub implements com.getxinfo.ws.SendSMS {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -157,7 +157,7 @@ public class SendSMSSoapBindingStub extends org.apache.axis.client.Stub implemen
         } else {
             super.service = service;
         }
-        ((org.apache.axis.client.Service)super.service).setTypeMappingVersion("1.1");
+        ((org.apache.axis.client.Service)super.service).setTypeMappingVersion("1.2");
             java.lang.Class cls;
             javax.xml.namespace.QName qName;
             javax.xml.namespace.QName qName2;
