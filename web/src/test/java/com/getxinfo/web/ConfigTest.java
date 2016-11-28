@@ -45,9 +45,9 @@ public class ConfigTest {
 		
 		String pw = Md5Util.encode(rand + pwd + pwd);
 			
-		String connID = "810284186940176432";
-		//String connID = registerProxy.setCallBackAddrV2(uc, pw, rand, callbackUrl, "2.0");
-		//System.out.println("connID="+connID);
+		//String connID = "810284186940176432";
+		String connID = registerProxy.setCallBackAddrV2(uc, pw, rand, callbackUrl, "2.0");
+		System.out.println("connID="+connID);
 		
 		SendSMSProxy smsProxy = new SendSMSProxy();
 		String str = smsProxy.sendSMSV2(uc, pw, rand, new String[]{"13658422301", "13389600105"}, "1", cont, msgID, connID, 15);		
