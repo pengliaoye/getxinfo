@@ -223,7 +223,19 @@
 		    <groupId>commons-discovery</groupId>
 		    <artifactId>commons-discovery</artifactId>
 		    <version>0.5</version>
-		</dependency>				
+		</dependency>			
+		
+	    <dependency>
+	        <groupId>org.littleshoot</groupId>
+	        <artifactId>littleproxy</artifactId>
+	        <version>1.1.0</version>
+	    </dependency>			
+	    
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jzlib</artifactId>
+		    <version>1.1.3</version>
+		</dependency>	    
 
 	</dependencies>
 

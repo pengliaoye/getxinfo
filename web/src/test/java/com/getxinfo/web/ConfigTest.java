@@ -4,6 +4,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -26,7 +29,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.getxinfo.util.HmacUtil;
+import com.getxinfo.util.JsonUtils;
 import com.getxinfo.util.Md5Util;
 import com.getxinfo.web.ConfigTest.MiliyoResponse.MiliyoUser;
 import com.getxinfo.ws.RegisterProxy;
@@ -65,6 +72,13 @@ public class ConfigTest {
 	}	
 	
 	@Test
+	public void testMd5(){
+		String signStr = "appkey=speex&city=0&education=0&imgh=380&imgw=380&ischange=0&islogin=0&marry=2&maxage=28&minage=18&mtype=1&page=1&province=0&sex=0&version=1.9.2&vsearch=0";
+		String encodeStr = Md5Util.encode(signStr);
+		Assert.assertEquals("344cd68eae5f5efb7b841d3de8471955", encodeStr);
+	}
+	
+	@Test
 	public void testHmac(){
 		String key = HmacUtil.getHmaSHA256key();
 		System.out.println(key);		
@@ -92,36 +106,132 @@ public class ConfigTest {
 	@Test
 	public void getMiliyoAvatar() throws InterruptedException{
 		String lastId = "1480657127391004";
-		miliyoAvatar(lastId);
+		List<String> urls = new ArrayList<>();
+		miliyoAvatar(urls, lastId);
 	}
 	
-	public void miliyoAvatar(String lastId) throws InterruptedException{
+	public void miliyoAvatar(List<String> urls, String lastId) throws InterruptedException{
 		OkHttpClient client = new OkHttpClient();
 		OkHttp3ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory(client);
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		headers.add("User-Agent", "Android/NIUPAIClient V69 Screen[1440x2560]_ua");		
-		List<String> urls = new ArrayList<>();
-		for(int i=0; i < 10; i++){			
-			Thread.sleep(5000);
+		headers.add("User-Agent", "Android/NIUPAIClient V69 Screen[1440x2560]_ua");				
+		for(int i=0; i < 10000; i++){			
+			Thread.sleep(10000);
 			headers.add("cookie", "_mly_lang=cn; PHPSESSID=oavbfbja15c67j8ihvef6lggi0; app_install_0=1; ldi=99000579371965; uid=17471626; uca=dbb3e9e38c19c6e4bfa0040c6dc30e99; t=1480652761; route=8fdf6ba1ee2cad35a6a2ddc1daea3025; ses=c3bcf2cb74c9c05e07494ae20c6c861f;");
-			HttpEntity<String> request = new HttpEntity<String>("last_id="+lastId+"&country_short=CN&loc_city=%E9%87", headers);
+			HttpEntity<String> request = new HttpEntity<String>("last_id="+lastId+"&country_short=CN&loc_city=%E9%87&sex=2", headers);
 			MiliyoResponse resp = restTemplate.postForObject("http://mapi.miliyo.com/search/online?isMiui=0&_ua=a|6.0.1|0|69|qq|99000579371965|1440|2560|0|cn|c89001e8a84209e9b6abde363861e3d7&mac=02:00:00:00:00:00", request, MiliyoResponse.class);			
 			List<MiliyoUser> users = resp.getList();
 			for(MiliyoUser usr : users){
-				urls.add(usr.getFace_url());
-				System.out.println(usr.getFace_url());
-				try {
-					FileUtils.writeStringToFile(new File("C:/Users/pgy/Desktop/下载图片/miliyo.txt"), usr.getFace_url() + "\n", true);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(!urls.contains(usr.getFace_url())){
+					urls.add(usr.getFace_url());
+					System.out.println(usr.getFace_url());
+					try {
+						FileUtils.writeStringToFile(new File("C:/Users/pgy/Desktop/下载图片/miliyo.txt"), usr.getFace_url() + "\n", "UTF-8", true);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					System.out.println("=========================");
 				}
 			}
 			if( resp.getLast_id() != null){
-				miliyoAvatar(resp.getLast_id());
+				miliyoAvatar(urls, resp.getLast_id());
 			}
 		}		
+	}
+	
+	@Test
+	public void testZhenai() throws IOException{
+		OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		Proxy proxy = new Proxy(Type.HTTP, new InetSocketAddress("localhost", 8888));
+	    //OkHttpClient client = builder.proxy(proxy).build();
+		OkHttpClient client = new OkHttpClient();
+		OkHttp3ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory(client);
+		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+		headers.add("Referer", "http://search.zhenai.com/v2/search/pinterest.do?sex=1&agebegin=20&ageend=35&workcityprovince=10105000&workcitycity=-1&education=5&education=6&education=7&salaryBegin=104&salaryEnd=-1&info=&h1=-1&h2=-1&occupation=-1&h=-1&c=-1&workcityprovince1=-1&workcitycity1=-1&constellation=-1&animals=-1&stock=-1&belief=-1&lvBegin=-1&lvEnd=-1&condition=66&orderby=hpf&hotIndex=&online=");
+		HttpEntity<String> request = new HttpEntity<String>("123", headers);
+		List<String> list = new ArrayList<>();
+		list.add("10102000");
+		list.add("10103000");
+		list.add("10101002");
+		list.add("10101201");
+		list.add("10105000");
+		list.add("10104000");
+		list.add("10101000");
+		list.add("10118000");
+		list.add("10131000");
+		list.add("10127000");
+		list.add("10107000");
+		list.add("10124000");
+		list.add("10115000");
+		list.add("10112000");
+		list.add("10125000");
+		list.add("10121000");
+		list.add("10120000");
+		list.add("10117000");
+		list.add("10114000");
+		list.add("10106000");
+		list.add("10119000");
+		list.add("10113000");
+		list.add("10116000");
+		list.add("10109000");
+		list.add("10111000");
+		list.add("10110000");
+		list.add("10130000");
+		list.add("10128000");
+		list.add("10126000");
+		list.add("10108000");
+		list.add("10123000");
+		list.add("10122000");
+		list.add("10129000");
+		list.add("10102000");
+		list.add("10103000");
+		list.add("10101002");
+		list.add("10101201");
+		list.add("10105000");
+		list.add("10104000");
+		list.add("10101000");
+		list.add("10118000");
+		list.add("10131000");
+		list.add("10127000");
+		list.add("10107000");
+		list.add("10124000");
+		list.add("10115000");
+		list.add("10112000");
+		list.add("10125000");
+		list.add("10121000");
+		list.add("10120000");
+		list.add("10117000");
+		list.add("10114000");
+		list.add("10106000");
+		list.add("10119000");
+		list.add("10113000");
+		list.add("10116000");
+		list.add("10109000");
+		list.add("10111000");
+		list.add("10110000");
+		list.add("10130000");
+		list.add("10128000");
+		list.add("10126000");
+		list.add("10108000");
+		list.add("10123000");
+		list.add("10122000");
+		list.add("10129000");
+		for(String cityId : list){
+			System.out.println("=============================current city ==========" + cityId);
+			for(int i = 1; i < 50; i++){
+				String respStr = restTemplate.postForObject("http://search.zhenai.com/v2/search/getPinterestData.do?sex=1&agebegin=20&ageend=35&workcityprovince="+cityId+"&workcitycity=-1&education=5&education=6&education=7&salaryBegin=104&salaryEnd=-1&info=&h1=-1&h2=-1&occupation=-1&h=-1&c=-1&workcityprovince1=-1&workcitycity1=-1&constellation=-1&animals=-1&stock=-1&belief=-1&lvBegin=-1&lvEnd=-1&condition=66&orderby=hpf&hotIndex=&online=&currentpage="+i+"&topSearch=false", request, String.class);
+				ObjectNode node = JsonUtils.readValue(respStr, ObjectNode.class);
+				ArrayNode arr = (ArrayNode)node.get("data");
+				for(JsonNode dt : arr){
+					String photopath = dt.get("photopath").asText();
+					FileUtils.writeStringToFile(new File("C:/Users/pgy/Desktop/下载图片/zhenai_woman.txt"), photopath + "\n", "UTF-8", true);
+				}
+			}
+		}
 	}
 	
 	public static class MiliyoResponse {
