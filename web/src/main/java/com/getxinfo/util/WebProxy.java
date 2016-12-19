@@ -9,6 +9,7 @@ import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.extras.SelfSignedMitmManager;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +27,7 @@ public class WebProxy {
 		File file = new File("C:/Users/pgy/Desktop/下载图片/in66.txt");
 		HttpProxyServer server = DefaultHttpProxyServer.bootstrap()
 				.withAddress(new InetSocketAddress("172.19.0.6", 8888))
+				//.withManInTheMiddle(new SelfSignedMitmManager())
 				.withFiltersSource(new HttpFiltersSourceAdapter() {
 
 					@Override
