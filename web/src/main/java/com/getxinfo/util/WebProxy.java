@@ -24,7 +24,7 @@ import io.netty.util.CharsetUtil;
 public class WebProxy {
 
 	public static void main(String[] args) {
-		File file = new File("C:/Users/pgy/Desktop/下载图片/in66.txt");
+		File file = new File("C:/Users/pgy/Desktop/下载图片/miliyo.txt");
 		HttpProxyServer server = DefaultHttpProxyServer.bootstrap()
 				.withAddress(new InetSocketAddress("172.19.0.6", 8888))
 				//.withManInTheMiddle(new SelfSignedMitmManager())
@@ -41,7 +41,7 @@ public class WebProxy {
 							@Override
 							public HttpObject serverToProxyResponse(HttpObject httpObject) {
 								String uri = this.originalRequest.getUri();
-								/*if (uri.indexOf("search/online") > 0) {
+								if (uri.indexOf("search/online") > 0) {
 									if (httpObject instanceof HttpContent) {
 										HttpContent content = (HttpContent) httpObject;
 										String data = content.content().toString(CharsetUtil.UTF_8);
@@ -56,7 +56,7 @@ public class WebProxy {
 											}
 										}
 									}
-								}*/
+								}
 								return httpObject;
 							}
 						};
